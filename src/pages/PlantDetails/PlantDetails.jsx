@@ -115,6 +115,7 @@ const PlantDetails = () => {
             plant={plant}
             closeModal={closeModal}
             isOpen={isOpen}
+            refetch={refetch}
           />
 
           <div className="md:col-span-3 order-first md:order-last mb-10">
