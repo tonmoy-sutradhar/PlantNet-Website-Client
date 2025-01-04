@@ -12,12 +12,14 @@ import useAuth from "./../../hooks/useAuth";
 
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useNavigate } from "react-router-dom";
 
 const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
   const { name, price, image, seller, category, description, quantity, _id } =
     plant;
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
   const [totalQuantity, setTotalQuantity] = useState();
   const [totalPrice, setTotalPrice] = useState(price);
   const [purchaseInfo, setPurchaseInfo] = useState({
@@ -65,6 +67,7 @@ const PurchaseModal = ({ closeModal, isOpen, plant, refetch }) => {
       });
       toast.success("Order successfully done.");
       refetch();
+      navigate("/dashboard/my-orders");
     } catch (err) {
       console.log(err);
     } finally {
