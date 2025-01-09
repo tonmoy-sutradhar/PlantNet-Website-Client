@@ -11,6 +11,7 @@ const SellerOrderDataRow = ({ orderData, refetch }) => {
 
   const axiosSecure = useAxiosSecure();
 
+  // seller and myOrder functionality same--##**
   // Handle Delete/cancel
   const handleDelete = async () => {
     try {
@@ -30,6 +31,25 @@ const SellerOrderDataRow = ({ orderData, refetch }) => {
       toast.error(err.response.data);
     } finally {
       closeModal();
+    }
+  };
+
+  // Handle Status change
+  const handleStatus = async (newStatus) => {
+    if (status === "pending") return;
+    // console.log(newStatus);
+
+    // Patch request to server--> for status change
+    try {
+      // change order status from db
+      await axiosSecure.patch(`/orders/${_id}`, {
+        status: newStatus,
+      });
+      refetch();
+      toast.success("Order status update.");
+    } catch (err) {
+      console.log(console.log(err));
+      toast.error("Order don't update");
     }
   };
 
@@ -59,6 +79,8 @@ const SellerOrderDataRow = ({ orderData, refetch }) => {
           <select
             required
             defaultValue={status}
+            disabled={status === "Delivered"}
+            onChange={(e) => handleStatus(e.target.value)}
             className="p-1 border-2 border-lime-300 focus:outline-lime-500 rounded-md text-gray-900 whitespace-no-wrap bg-white"
             name="category"
           >
