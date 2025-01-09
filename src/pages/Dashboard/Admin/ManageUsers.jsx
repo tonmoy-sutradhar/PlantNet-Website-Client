@@ -3,6 +3,7 @@ import UserDataRow from "../../../components/Dashboard/TableRows/UserDataRow";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
+import LoadingSpinner from "./../../../components/Shared/LoadingSpinner";
 
 const ManageUsers = () => {
   const { user } = useAuth();
@@ -37,6 +38,8 @@ const ManageUsers = () => {
       }
     },
   });
+
+  if (isLoading) return <LoadingSpinner></LoadingSpinner>;
 
   return (
     <>
@@ -83,7 +86,11 @@ const ManageUsers = () => {
                   ))} */}
                   {Array.isArray(users) &&
                     users.map((userData) => (
-                      <UserDataRow key={userData._id} userData={userData} />
+                      <UserDataRow
+                        refetch={refetch}
+                        key={userData._id}
+                        userData={userData}
+                      />
                     ))}
                 </tbody>
               </table>
