@@ -3,13 +3,45 @@ import { FcGoogle } from "react-icons/fc";
 import useAuth from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 import { TbFidgetSpinner } from "react-icons/tb";
-import { imageUpload } from "../../API/Utils";
+import { imageUpload, saveUser } from "../../API/Utils";
 
 const SignUp = () => {
   const { createUser, updateUserProfile, signInWithGoogle, loading } =
     useAuth();
   const navigate = useNavigate();
   // form submit handler
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const form = event.target;
+  //   const name = form.name.value;
+  //   const email = form.email.value;
+  //   const password = form.password.value;
+  //   const image = form.image.files[0];
+
+  //   // image upload
+  //   // const imageFile = form.photo.files[0];
+  //   const photoURL = await imageUpload(image);
+
+  //   try {
+  //     //2. User Registration
+  //     const result = await createUser(email, password);
+
+  //     //3. Save username & profile photo
+
+  //     await updateUserProfile(name, photoURL);
+  //     console.log(result);
+
+  //     await saveUser({ ...result?.user, displayName: name, photoURL });
+
+  //     navigate("/");
+  //     toast.success("Signup Successful");
+  //   } catch (err) {
+  //     console.log(err);
+  //     toast.error(err?.message);
+  //   }
+  // };
+
+  // Help chatgpt
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
@@ -18,43 +50,67 @@ const SignUp = () => {
     const password = form.password.value;
     const image = form.image.files[0];
 
-    // image upload
-    // const imageFile = form.photo.files[0];
+    // Image upload
     const photoURL = await imageUpload(image);
 
     try {
-      //2. User Registration
+      // 1. User registration
       const result = await createUser(email, password);
 
-      //3. Save username & profile photo
-
+      // 2. Update user profile
       await updateUserProfile(name, photoURL);
-      console.log(result);
 
-      await saveUser({ ...result?.user, displayName: name, photoURL });
+      // 3. Save user in the database
+      await saveUser({
+        email: result?.user?.email,
+        displayName: name,
+        photoURL,
+      });
 
       navigate("/");
       toast.success("Signup Successful");
     } catch (err) {
-      console.log(err);
-      toast.error(err?.message);
+      console.error(err);
+      toast.error(err?.message || "Signup failed. Please try again.");
     }
   };
 
   // Handle Google Signin
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     //User Registration using google
+  //     const data = await signInWithGoogle();
+  //     await saveUser(data?.user);
+
+  //     navigate("/");
+  //     toast.success("Signup Successful");
+  //   } catch (err) {
+  //     console.log(err);
+  //     toast.error(err?.message);
+  //   }
+  // };
+
+  // help chatgpt
   const handleGoogleSignIn = async () => {
     try {
-      //User Registration using google
-      const data = await signInWithGoogle();
-      await saveUser(data?.user);
+      // User registration using Google
+      const result = await signInWithGoogle();
+
+      // Save user in the database
+      await saveUser({
+        email: result?.user?.email,
+        displayName: result?.user?.displayName,
+        photoURL: result?.user?.photoURL,
+      });
 
       navigate("/");
       toast.success("Signup Successful");
     } catch (err) {
-      console.log(err);
-      toast.error(err?.message);
+      console.error(err);
+      toast.error(err?.message || "Google Sign-In failed. Please try again.");
     }
   };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-white">
       <div className="flex flex-col max-w-md p-6 rounded-md sm:p-10 bg-gray-100 text-gray-900">

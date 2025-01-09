@@ -16,6 +16,7 @@ const UserDataRow = ({ userData, refetch }) => {
       refetch();
       toast.success("Role update Successfully.");
     } catch (err) {
+      toast.error("Some thing wrong is Update-Role");
       console.log(err);
     } finally {
       setIsOpen(false);
