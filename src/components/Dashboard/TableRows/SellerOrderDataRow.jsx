@@ -52,6 +52,7 @@ const SellerOrderDataRow = ({ orderData, refetch }) => {
       toast.error("Order don't update");
     }
   };
+  console.log(_id);
 
   return (
     <tr>
